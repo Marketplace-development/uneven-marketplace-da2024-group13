@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jouw Profiel</title>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 1rem 0;
+            background-color: #004AAD;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid #004AAD;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #004AAD;
+            margin-bottom: 2rem;
+        }
+
+        .profile-details, .zoekertjes-container, .recensies-container {
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #ffffff;
+            margin-bottom: 5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-details label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #004AAD;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .input-box {
+            background-color: white;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .edit-button {
+            background-color: #004AAD;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+        }
+
+        .edit-button:hover {
+            background-color: #003580;
+        }
+
+        .zoekertje {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd; /* Lijntje onder elk zoekertje */
+        }
+
+        .zoekertje:last-child {
+            border-bottom: none; /* Geen lijntje onder het laatste zoekertje */
+        }
+
+        .logout-button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .zoekertje-buttons {
+            display: flex;
+            gap: 10px; /* Ruimte tussen de knoppen */
+            margin-top: 10px;
+        }
+
+        .name-button, .agenda-button {
+            background-color: white;
+            border: 2px solid #004AAD;
+            color: #004AAD;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .name-button:hover, .agenda-button:hover {
+            background-color: #004AAD;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #004AAD;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .recensie {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd; /* Lijntje onder elke recensie */
+        }
+
+        .recensie:last-child {
+            border-bottom: none; /* Geen lijntje onder de laatste recensie */
+        }
+        footer {
+            width: 85%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            border-top: 2px solid #004AAD;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        footer a {
+            text-decoration: none;
+            text-align: center;
+            color: #004AAD;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer span {
+            font-size: 1.5rem;
+        }
+
+        footer img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+        <h1>JOUW PROFIEL</h1>
+
+        <!-- Profielgegevens -->
+        <div class="profile-details">
+            <label>Gebruikersnaam:</label>
+            <div class="input-box">{{ user.padelspeler_name }}</div>
+
+            <label>E-mail:</label>
+            <div class="input-box">{{ user.email }}</div>
+
+            <label>Telefoonnummer:</label>
+            <div class="input-box">{{ user.telephone_number }}</div>
+
+            <label>Woonplaats:</label>
+            <div class="input-box">{{ user.woonplaats }}</div>
+
+            <label>Niveau:</label>
+            <div class="input-box">{{ user.niveau }}</div>
+
+            <a href="{{ url_for('edit_profile') }}" class="edit-button">Profiel Bewerken</a>
+            <a href="{{ url_for('eigentransacties') }}" class="edit-button">Eigen transacties</a>
+            <a href="{{ url_for('logout') }}" class="edit-button">Uitloggen</a>
+        </div>
+
+        <!-- Agenda -->
+        <div class="zoekertjes-container">
+            <h3>Agenda</h3>
+            {% if komende_sessies %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Tijd</th>
+                        <th>Naam</th>
+                        <th>Locatie</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sessie in komende_sessies %}
+                    <tr>
+                        <td>{{ sessie.datum.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ sessie.start_time.strftime('%H:%M') }} - {{ sessie.end_time.strftime('%H:%M') }}</td>
+                        <td><a href="{{ url_for('eigenprofiel_specifiek_zoekertje', listing_id=sessie.listing_id) }}" class="name-button">{{ sessie.name }}</a></td>
+                        <td>{{ sessie.locatie.sportclub_naam }}</td>
+                        <td>
+                            <a href="{{ url_for('toevoegen_calendar', listing_id=sessie.listing_id) }}" class="agenda-button">Voeg toe aan Agenda</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Er zijn momenteel geen komende sessies.</p>
+            {% endif %}
+        </div>
+
+        <div class="zoekertjes-container">
+            <h3>Jouw Actieve Zoekertjes</h3>
+            {% if zoekertjes %}
+                {% for row in zoekertjes %}
+                <div class="zoekertje">
+                    <h4>{{ row.zoekertje.name }}</h4>
+                    <p><strong>Datum:</strong> {{ row['zoekertje'].datum.strftime('%d-%m-%Y') }}</p>
+                    <p><strong>Locatie:</strong> {{ row['zoekertje'].locatie.sportclub_naam }}</p>
+                    <p><strong>Niveau:</strong> {{ row['zoekertje'].niveau }}</p>
+                    <p><strong>Aantal toegezegde personen:</strong> {{ row['transaction_count'] }} / {{ row['zoekertje'].aantal_personen }}</p>
+                    <p><strong>Betaler(s):</strong>
+                        {% if row['betaler_namen'] %}
+                            {{ row['betaler_namen'] | join(', ') }}
+                        {% else %}
+                            Geen betaler
+                        {% endif %}
+                    </p>
+
+                    
+                    <div class="zoekertje-buttons">
+                        <a href="{{ url_for('edit_zoekertje', listing_id=row.zoekertje.listing_id) }}" class="edit-button">Bewerken</a>
+                        <form action="{{ url_for('delete_zoekertje', listing_id=row.zoekertje.listing_id) }}" method="POST">
+                            <button type="submit" class="edit-button delete-button">Verwijderen</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Je hebt nog geen zoekertjes geplaatst.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Recensies -->
+        <div class="recensies-container">
+            <h3>Jouw Recensies</h3>
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="recensie">
+                    <p><strong>Score:</strong> {{ review.score }} / 5</p>
+                    <p><strong>Commentaar:</strong> {{ review.commentaar }}</p>
+                    <p><strong>Geplaatst door:</strong> {{ review.plaatser_name }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Geen recensies beschikbaar.</p>
+            {% endif %}
+        </div>
+        <footer>
+            <a href="{{ url_for('zoekertjes', **request.args) }}">
+                <img src="{{ url_for('static', filename='images/zoekertjes.png') }}" alt="Ontdek">
+                Ontdek
+            </a>
+            <a href="{{ url_for('nieuw_zoekertje') }}">
+                <img src="{{ url_for('static', filename='images/tennisbal.png') }}" alt="Nieuw">
+                Nieuw
+            </a>
+            <a href="{{ url_for('frequent_day_reminder') }}">
+                <img src="{{ url_for('static', filename='images/for_you.png') }}" alt="Voor jou">
+                Voor jou
+            </a>
+            <a href="{{ url_for('nieuwe_review') }}">
+                <img src="{{ url_for('static', filename='images/recensie.png') }}" alt="Recensie">
+                Recensie
+            </a>
+            <a href="{{ url_for('profielen') }}">
+                <img src="{{ url_for('static', filename='images/zoek.png') }}" alt="Gebruikers">
+                Gebruikers
+            </a>
+            <a href="{{ url_for('profile') }}">
+                <img src="{{ url_for('static', filename='images/profiel.png') }}" alt="Profiel">
+                Profiel
+            </a>
+        </footer>
+    </div>
+</body>
+</html>

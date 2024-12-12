@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speeldag Reminder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 1rem 0;
+            background-color: #004AAD;
+            padding-bottom: 70px;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid #004AAD;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #004AAD;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            text-align: left;
+            font-size: 1.5rem;
+            color: #004AAD;
+            margin-bottom: 2rem;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .highlight {
+            color: #004AAD;
+            font-weight: bold;
+        }
+
+        .zoekertje-details,
+        .city-zoekertjes {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .zoekertje-details .buttons,
+        .city-zoekertjes .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .zoekertje-details p,
+        .city-zoekertjes p {
+            flex-grow: 1;
+            margin: 0;
+        }
+
+        .button {
+            padding: 0.6rem 1rem;
+            background-color: #004AAD;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .button:hover {
+            background-color: #003580;
+        }
+
+        footer {
+            width: 85%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            border-top: 2px solid #004AAD;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        footer a {
+            text-decoration: none;
+            text-align: center;
+            color: #004AAD;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+
+        <h1>SUGGESTIES VOOR JOU!</h1>
+        <p style="text-align:left; font-size: 1.5rem;color: #004AAD;font-weight: bold;">
+                Zoekertjes op jouw favoriete dag: </p>
+        {% if frequent_day %}
+            <p>Je speelt meestal op: <span class="highlight">{{ frequent_day }}</span> </p>
+
+            {% if zoekertjes %}
+                <p>We hebben zoekertjes gevonden die overeenkomen met jouw favoriete speeldag:</p>
+                {% for zoekertje in zoekertjes %}
+                <div class="zoekertje-details">
+                    <div>
+                        <h3>{{ zoekertje.name }}</h3>
+                        <p>{{ zoekertje.formatted_date() }}</p>
+                        <p><strong>Locatie:</strong> {{ zoekertje.locatie.sportclub_naam }}</p>
+                        <p><strong>Aantal Gevraagde Personen:</strong> {{ zoekertje.aantal_personen }}</p>
+                    </div>
+                    <div class="buttons">
+                        <a href="{{ url_for('specifiekzoekertje', listing_id=zoekertje.listing_id) }}" class="button">Bekijk Zoekertje</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: left; font-size: 1rem;">Spijtig! Er zijn geen zoekertjes op jouw favoriete dag.</p>
+            {% endif %}
+        {% else %}
+            <p style="text-align: left; font-size: 1rem;">Je hebt nog geen favoriete speeldag!</p>
+        {% endif %}
+
+        <h2>Zoekertjes in jouw stad:</h2>
+        {% if city_zoekertjes %}
+            {% for zoekertje in city_zoekertjes %}
+            <div class="city-zoekertjes">
+                <div>
+                    <h3>{{ zoekertje.name }}</h3>
+                    <p>{{ zoekertje.formatted_date() }}</p>
+                    <p><strong>Locatie:</strong> {{ zoekertje.locatie.sportclub_naam }}</p>
+                    <p><strong>Aantal Gevraagde Personen:</strong> {{ zoekertje.aantal_personen }}</p>
+                </div>
+                <div class="buttons">
+                    <a href="{{ url_for('specifiekzoekertje', listing_id=zoekertje.listing_id) }}" class="button">Bekijk Zoekertje</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: left; font-size: 1rem;">Er zijn momenteel geen zoekertjes in jouw stad.</p>
+        {% endif %}
+
+        <footer>
+            <a href="{{ url_for('zoekertjes') }}">
+                <img src="{{ url_for('static', filename='images/zoekertjes.png') }}" alt="Ontdek">
+                Ontdek
+            </a>
+            <a href="{{ url_for('nieuw_zoekertje') }}">
+                <img src="{{ url_for('static', filename='images/tennisbal.png') }}" alt="Nieuw">
+                Nieuw
+            </a>
+            <a href="{{ url_for('frequent_day_reminder') }}">
+                <img src="{{ url_for('static', filename='images/for_you.png') }}" alt="Voor jou">
+                Voor jou
+            </a>
+            <a href="{{ url_for('nieuwe_review') }}">
+                <img src="{{ url_for('static', filename='images/recensie.png') }}" alt="Recensie">
+                Recensie
+            </a>
+            <a href="{{ url_for('profielen') }}">
+                <img src="{{ url_for('static', filename='images/zoek.png') }}" alt="Gebruikers">
+                Gebruikers
+            </a>
+            <a href="{{ url_for('profile') }}">
+                <img src="{{ url_for('static', filename='images/profiel.png') }}" alt="Profiel">
+                Profiel
+            </a>
+        </footer>
+    </div>
+</body>
+</html>

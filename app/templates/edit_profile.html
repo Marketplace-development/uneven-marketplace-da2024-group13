@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profiel Bewerken</title>
+    <style>
+        body {
+            font-family: 'Antonio', sans-serif;
+            margin: 0;
+            padding: 1rem 0;
+            background-color: #004AAD;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid #004AAD;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem; /* Consistent met zoekertjes */
+            color: #004AAD;
+            margin-bottom: 2rem;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #004AAD;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea, button {
+            font-size: 1rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd; /* Consistente border */
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #004AAD;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        
+        button {
+            background-color: #004AAD;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #003580;
+        }
+
+        footer {
+            width: 85%; /* Zelfde breedte als container */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            border-top: 2px solid #004AAD;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        footer a {
+            text-decoration: none;
+            text-align: center;
+            color: #004AAD;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer span {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+        <h1>PROFIEL BEWERKEN</h1>
+        <form method="POST">
+            <!-- Gebruikersnaam -->
+            <label for="padelspeler_name">Gebruikersnaam:</label>
+            <input 
+                type="text" 
+                name="padelspeler_name" 
+                id="padelspeler_name" 
+                value="{{ user.padelspeler_name }}" 
+                required
+            >
+
+            <!-- Telefoonnummer -->
+            <label for="telephone_number">Telefoonnummer:</label>
+            <input 
+                type="text" 
+                name="telephone_number" 
+                id="telephone_number" 
+                value="{{ user.telephone_number }}" 
+                required
+            >
+
+            <!-- E-mail -->
+            <label for="email">E-mail:</label>
+            <input 
+                type="email" 
+                name="email" 
+                id="email" 
+                value="{{ user.email }}" 
+                required
+            >
+
+            <!-- Woonplaats -->
+            <label for="woonplaats">Woonplaats:</label>
+            <select name="woonplaats" id="woonplaats" required>
+                <option value="" disabled selected>Selecteer uw woonplaats:</option>
+                {% for stad in steden %}
+                    <option value="{{ stad }}" {{ 'selected' if user.woonplaats == stad else '' }}>
+                        {{ stad }}
+                    </option>
+                {% endfor %}
+                {% if steden|length == 0 %}
+                    <option value="" disabled>Geen steden beschikbaar</option>
+                {% endif %}
+            </select>
+
+            <!-- Niveau -->
+            <label for="niveau">Niveau:</label>
+            <select name="niveau" id="niveau" class="{% if 'niveau' in errors %}error{% endif %}" required>
+                <option value="" disabled selected>Selecteer uw niveau:</option>
+                <option value="P50 - geen ervaring" {{ 'selected' if user.niveau == 'P50 - geen ervaring' else '' }}>P50 - geen ervaring</option>
+                <option value="P100" {{ 'selected' if user.niveau == 'P100' else '' }}>P100</option>
+                <option value="P200" {{ 'selected' if user.niveau == 'P200' else '' }}>P200</option>
+                <option value="P300" {{ 'selected' if user.niveau == 'P300' else '' }}>P300</option>
+                <option value="P400" {{ 'selected' if user.niveau == 'P400' else '' }}>P400</option>
+                <option value="P500" {{ 'selected' if user.niveau == 'P500' else '' }}>P500</option>
+                <option value="P700" {{ 'selected' if user.niveau == 'P700' else '' }}>P700</option>
+                <option value="P1000 - professioneel" {{ 'selected' if user.niveau == 'P1000 - professioneel' else '' }}>P1000 - professioneel</option>
+                
+            </select>
+            {% if 'niveau' in errors %}
+                <small class="error-message">{{ errors['niveau'] }}</small>
+            {% endif %}
+
+            <button type="submit">Opslaan</button>
+        </form>
+    </div>
+</body>
+</html>
+
+

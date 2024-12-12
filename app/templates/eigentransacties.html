@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transacties</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 1rem 0;
+            background-color: #004AAD;
+            padding-bottom: 50px;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid #004AAD;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            color: #004AAD;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #004AAD;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .transactie-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .transactie-details {
+            flex-grow: 1;
+        }
+
+        .back-button {
+            font-size: 24px;
+            color: #004AAD;
+            text-decoration: none;
+        }
+
+        
+        footer {
+            width: 85%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            border-top: 2px solid #004AAD;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        footer a {
+            text-decoration: none;
+            text-align: center;
+            color: #004AAD;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer span {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+        <a href="{{ url_for('profile') }}" class="back-button">&#8249; Terug</a>
+    
+
+        <h1>JOUW TRANSACTIES</h1>
+
+        <h3>Als Betaler</h3>
+        {% if transacties_betaler %}
+            {% for transactie in transacties_betaler %}
+            <div class="transactie-card">
+                <div class="transactie-details">
+                    <p><strong>Zoekertje:</strong> {{ transactie.name }}</p>
+                    <p><strong>Prijs:</strong> {{ transactie.prijs }} €</p>
+                    <p><strong>Locatie:</strong> {{ transactie.sportclub_naam }}, {{ transactie.straat }} {{ transactie.postcode }}, {{ transactie.stad }}, {{ transactie.land }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Je hebt geen transacties als betaler.</p>
+        {% endif %}
+
+        <h3>Als Ontvanger</h3>
+        {% if transacties_ontvanger %}
+            {% for transactie in transacties_ontvanger %}
+            <div class="transactie-card">
+                <div class="transactie-details">
+                    <p><strong>Zoekertje:</strong> {{ transactie.name }}</p>
+                    <p><strong>Prijs:</strong> {{ transactie.prijs }} €</p>
+                    <p><strong>Locatie:</strong> {{ transactie.sportclub_naam }}, {{ transactie.straat }} {{ transactie.postcode }}, {{ transactie.stad }}, {{ transactie.land }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Je hebt geen transacties als ontvanger.</p>
+        {% endif %}
+
+    </div>
+</body>
+</html>
+
