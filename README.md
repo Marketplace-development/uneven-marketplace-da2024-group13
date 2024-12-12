@@ -60,7 +60,7 @@ Volg deze stappen om **RallyUp** lokaal te installeren en ervoor te zorgen dat h
 4. **Installeer de vereisten**  
    Installeer de benodigde Python-pakketten:
    ```bash
-   pip install flask flask-sqlalchemy flask-migrate flask-wtf sqlalchemy python-ics
+   pip install flask flask-sqlalchemy flask-migrate sqlalchemy python-ics
    ```
 
 5. **Start de applicatie**  
