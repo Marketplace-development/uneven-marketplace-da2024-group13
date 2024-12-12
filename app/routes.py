@@ -507,25 +507,54 @@ def register_routes(app):
     
     @app.route('/eigentransacties', methods=['GET'])
     def eigentransacties():
+        userID = session['userID']  # Huidige gebruiker
 
-        userID = session['userID']  
+    # Transacties waarbij de gebruiker de betaler is
+        transacties_betaler = db.session.query(
+            Transaction,
+            Padelspeler.padelspeler_name.label('ontvanger_naam'),
+            Zoekertje.name,
+            Zoekertje.prijs,
+            Locatie.sportclub_naam,
+            Locatie.straat,
+            Locatie.postcode,
+            Locatie.nummer,
+            Locatie.stad,
+            Locatie.land
+        ).join(
+            Padelspeler, Transaction.ontvanger_id == Padelspeler.padelspeler_id
+        ).join(
+            Zoekertje, Transaction.listing_id == Zoekertje.listing_id
+        ).join(
+            Locatie, Zoekertje.sportclub == Locatie.sportclub
+        ).filter(
+            Transaction.betaler_id == userID
+        ).all()
 
-        transacties_betaler = db.session.query(Transaction).select_from(Transaction) \
-            .filter_by(betaler_id=userID) \
-            .join(Zoekertje, Transaction.listing_id == Zoekertje.listing_id) \
-            .join(Locatie, Zoekertje.sportclub == Locatie.sportclub) \
-            .add_columns(Zoekertje.name, Zoekertje.prijs, Locatie.sportclub_naam, Locatie.straat, Locatie.postcode, Locatie.nummer, Locatie.stad, Locatie.land) \
-            .all()
-
-        transacties_ontvanger = db.session.query(Transaction).select_from(Transaction) \
-            .filter_by(ontvanger_id=userID) \
-            .join(Zoekertje, Transaction.listing_id == Zoekertje.listing_id) \
-            .join(Locatie, Zoekertje.sportclub == Locatie.sportclub) \
-            .add_columns(Zoekertje.name, Zoekertje.prijs, Locatie.sportclub_naam, Locatie.straat, Locatie.postcode, Locatie.nummer, Locatie.stad, Locatie.land) \
-            .all()
+    # Transacties waarbij de gebruiker de ontvanger is
+        transacties_ontvanger = db.session.query(
+            Transaction,
+            Padelspeler.padelspeler_name.label('betaler_naam'),
+            Zoekertje.name,
+            Zoekertje.prijs,
+            Locatie.sportclub_naam,
+            Locatie.straat,
+            Locatie.postcode,
+            Locatie.nummer,
+            Locatie.stad,
+            Locatie.land
+        ).join(
+            Padelspeler, Transaction.betaler_id == Padelspeler.padelspeler_id
+        ).join(
+            Zoekertje, Transaction.listing_id == Zoekertje.listing_id
+        ).join(
+            Locatie, Zoekertje.sportclub == Locatie.sportclub
+        ).filter(
+            Transaction.ontvanger_id == userID
+        ).all()
 
         return render_template(
-            'eigentransacties.html',  
+            'eigentransacties.html',
             transacties_betaler=transacties_betaler,
             transacties_ontvanger=transacties_ontvanger
         )
