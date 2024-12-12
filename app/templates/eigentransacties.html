@@ -127,6 +127,7 @@
                     <p><strong>Zoekertje:</strong> {{ transactie.name }}</p>
                     <p><strong>Prijs:</strong> {{ transactie.prijs }} €</p>
                     <p><strong>Locatie:</strong> {{ transactie.sportclub_naam }}, {{ transactie.straat }} {{ transactie.postcode }}, {{ transactie.stad }}, {{ transactie.land }}</p>
+                    <p><strong>Ontvanger:</strong> {{ transactie.ontvanger_naam }}</p>
                 </div>
             </div>
             {% endfor %}
@@ -142,6 +143,7 @@
                     <p><strong>Zoekertje:</strong> {{ transactie.name }}</p>
                     <p><strong>Prijs:</strong> {{ transactie.prijs }} €</p>
                     <p><strong>Locatie:</strong> {{ transactie.sportclub_naam }}, {{ transactie.straat }} {{ transactie.postcode }}, {{ transactie.stad }}, {{ transactie.land }}</p>
+                    <p><strong>Betaler:</strong> {{ transactie.betaler_naam }}</p>
                 </div>
             </div>
             {% endfor %}
