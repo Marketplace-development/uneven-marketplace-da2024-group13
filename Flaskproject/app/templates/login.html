@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Antonio', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #004AAD;
+            height: 100vh;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            margin: 0 auto 20px auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 15px; /* Consistente padding */
+            font-size: 18px; /* Zelfde lettergrootte */
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 20px;
+            box-sizing: border-box; /* Zorgt ervoor dat padding en breedte samenwerken */
+        }
+
+        button {
+            font-weight: bold;
+            color: white;
+            background-color: #003580;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #00224d;
+        }
+
+        .tagline {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #d9d9d9;
+        }
+
+        ul {
+            list-style: none; /* Verwijder bolletjes */
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        li {
+            color: red; /* Maak de melding rood */
+            font-weight: bold;
+        }
+        .back-button {
+            position: absolute; /* Positioneer absoluut ten opzichte van de container */
+            top: 20px; /* Ruimte vanaf de bovenkant van het scherm */
+            left: 20px; /* Ruimte vanaf de linkerkant van het scherm */
+            font-size: 18px; /* Tekstgrootte */
+            font-weight: bold; /* Vetgedrukte tekst */
+            color: white; /* Witte tekstkleur */
+            text-decoration: none; /* Geen onderstreping */
+            display: flex; /* Flexbox om de pijl en tekst uit te lijnen */
+            align-items: center; /* Verticaal gecentreerd */
+            gap: 5px; /* Ruimte tussen pijl en tekst */
+        }
+        
+        .back-button::before {
+            content: '\276E'; /* Pijlsymbool */
+            font-size: 20px; /* Iets grotere pijl */
+            color: white; /* Witte kleur voor de pijl */
+        }
+        
+        .back-button:hover {
+            text-decoration: underline; /* Onderstreep tekst bij hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <p class="tagline">Meet, Match, Rally</p>
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+        <h1>Vul in:</h1>
+
+        <!-- Flash-meldingen -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul>
+              {% for category, message in messages %}
+                <li class="flash-{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Formulier -->
+        <form method="POST" action= "{{url_for('login')}}">
+            <label for="email">E-mail:</label>
+            <input type="email" name="email" id="email" placeholder="E-mail:" required>
+            <button type="submit">Inloggen</button>
+        </form>
+
+        <a href="/" class="back-button">Terug</a>
+    </div>
+</body>
+</html>
+</html>

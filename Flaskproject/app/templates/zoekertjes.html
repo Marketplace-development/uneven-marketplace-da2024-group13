@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoekertjes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 1rem 0;
+            background-color: #004AAD;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid #004AAD;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            color: #004AAD;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        .filters select,
+        .filters input[type="date"] {
+            padding: 0.6rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: calc(50% - 0.5rem);
+            box-sizing: border-box;
+        }
+
+        .zoekertjes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 5rem;
+        }
+
+        .zoekertje-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .zoekertje-details {
+            flex-grow: 1;
+        }
+
+        .button {
+            padding: 0.6rem 1rem;
+            background-color: #004AAD;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .button:hover {
+            background-color: #003580;
+        }
+        .flash-messages .flash-error {
+            color: red; /* Voor de tekstkleur */
+            font-weight: bold; /* Optioneel: maak het vetgedrukt */
+            border: 1px solid red; /* Optioneel: voeg een rode rand toe */
+            padding: 10px; /* Optioneel: voeg wat ruimte toe */
+            background-color: #ffe6e6; /* Optioneel: lichtroze achtergrond */
+            border-radius: 5px; /* Optioneel: maak de hoeken rond */
+        }
+        
+
+        footer {
+            width: 85%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: white;
+            border-top: 2px solid #004AAD;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        footer a {
+            text-decoration: none;
+            text-align: center;
+            color: #004AAD;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer span {
+            font-size: 1.5rem;
+        }
+
+        footer img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+
+        <h1>BESCHIKBARE ZOEKERTJES</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">
+                            <span class="message {{ category }}">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+
+        <!-- Filters -->
+        <form method="GET" action="{{ url_for('zoekertjes') }}" class="filters">
+            <select name="prijs" id="prijs">
+                <option value="">Prijs</option>
+                <option value="0-5" {% if request.args.get('prijs') == '0-5' %}selected{% endif %}>0 - 5 Euro</option>
+                <option value="5-10" {% if request.args.get('prijs') == '5-10' %}selected{% endif %}>5 - 10 Euro</option>
+                <option value="10-15" {% if request.args.get('prijs') == '10-15' %}selected{% endif %}>10 - 15 Euro</option>
+                <option value="15-20" {% if request.args.get('prijs') == '15-20' %}selected{% endif %}>15 - 20 Euro</option>
+                <option value="20-25" {% if request.args.get('prijs') == '20-25' %}selected{% endif %}>20 - 25 Euro</option>
+            </select>
+            
+            <select id="stad" name="stad">
+                {% if data['locatie'] and selected_stad %}
+                    <!-- Toon alleen de geselecteerde stad -->
+                    <option value="{{ selected_stad }}" selected>{{ selected_stad }}</option>
+                {% else %}
+                    <!-- Toon alle steden als er geen locatie is geselecteerd -->
+                    <option value="">Stad</option>
+                    {% for stad, locaties in locaties_per_stad.items() %}
+                    <option value="{{ stad }}" {% if data['stad'] == stad %}selected{% endif %}>
+                        {{ stad }}
+                    </option>
+                    {% endfor %}
+                {% endif %}
+            </select>
+
+            <select id="locatie" name="locatie">
+                <option value="">Sportclub</option>
+                {% for stad, locaties in locaties_per_stad.items() %}
+                <optgroup label="{{ stad }}">
+                    {% for locatie in locaties %}
+                    <option value="{{ locatie.sportclub_naam }}" {% if data['locatie'] == locatie.sportclub_naam %}selected{% endif %}>
+                        {{ locatie.sportclub_naam }}
+                    </option>
+                    {% endfor %}
+                </optgroup>
+                {% endfor %}
+            </select>
+            
+
+            <select name="niveau" id="niveau">
+                <option value="">Selecteer het gevraagde niveau</option>
+                <option value="P50" {% if request.args.get('niveau') == 'P50' %}selected{% endif %}>P50 - geen ervaring</option>
+                <option value="P100" {% if request.args.get('niveau') == 'P100' %}selected{% endif %}>P100</option>
+                <option value="P200" {% if request.args.get('niveau') == 'P200' %}selected{% endif %}>P200</option>
+                <option value="P300" {% if request.args.get('niveau') == 'P300' %}selected{% endif %}>P300</option>
+                <option value="P400" {% if request.args.get('niveau') == 'P400' %}selected{% endif %}>P400</option>
+                <option value="P500" {% if request.args.get('niveau') == 'P500' %}selected{% endif %}>P500</option>
+                <option value="P700" {% if request.args.get('niveau') == 'P700' %}selected{% endif %}>P700</option>
+                <option value="P1000" {% if request.args.get('niveau') == 'P1000' %}selected{% endif %}>P1000 - professioneel</option>
+            </select>
+
+            <select name="aantal_personen" id="aantal_personen">
+                <option value="">Aantal Gevraagde Personen</option>
+                {% for i in range(1, 4) %}
+                <option value="{{ i }}" {% if request.args.get('aantal_personen') == i|string %}selected{% endif %}>
+                    {{ i }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <input type="date" name="datum" id="datum" value="{{ request.args.get('datum', '') }}">
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="submit" class="button">Filter</button>
+                <a href="{{ url_for('zoekertjes') }}" class="button" style="background-color: #004AAD;">Filter verwijderen</a>
+            </div>
+        </form>
+
+        <div class="zoekertjes-list">
+            {% if zoekertjes %}
+                {% for zoekertje in zoekertjes %}
+                <div class="zoekertje-card">
+                    <div class="zoekertje-details">
+                        <h3>{{ zoekertje.name }}</h3>
+                        <p>{{ zoekertje.formatted_date() }}</p>
+                        <p><strong>Locatie:</strong> {{ zoekertje.locatie.sportclub_naam }}</p>
+                        <p><strong>Aantal Gevraagde Personen:</strong> {{ zoekertje.aantal_personen }}</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('specifiekzoekertje', listing_id=zoekertje.listing_id, **request.args) }}" class="button">Interesse?</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; font-size: 1.2rem; color: #004AAD;">Er zijn momenteel geen beschikbare zoekertjes. Probeer later opnieuw!</p>
+            {% endif %}
+        </div>
+        <footer>
+            <a href="{{ url_for('zoekertjes', **request.args) }}">
+                <img src="{{ url_for('static', filename='images/zoekertjes.png') }}" alt="Ontdek">
+                Ontdek
+            </a>
+            <a href="{{ url_for('nieuw_zoekertje') }}">
+                <img src="{{ url_for('static', filename='images/tennisbal.png') }}" alt="Nieuw">
+                Nieuw
+            </a>
+            <a href="{{ url_for('frequent_day_reminder') }}">
+                <img src="{{ url_for('static', filename='images/for_you.png') }}" alt="Voor jou">
+                Voor jou
+            </a>
+            <a href="{{ url_for('nieuwe_review') }}">
+                <img src="{{ url_for('static', filename='images/recensie.png') }}" alt="Recensie">
+                Recensie
+            </a>
+            <a href="{{ url_for('profielen') }}">
+                <img src="{{ url_for('static', filename='images/zoek.png') }}" alt="Gebruikers">
+                Gebruikers
+            </a>
+            <a href="{{ url_for('profile') }}">
+                <img src="{{ url_for('static', filename='images/profiel.png') }}" alt="Profiel">
+                Profiel
+            </a>
+        </footer>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+

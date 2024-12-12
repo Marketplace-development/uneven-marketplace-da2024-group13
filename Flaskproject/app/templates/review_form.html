@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nieuwe Recensie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 1rem 0;
+            background-color: #004AAD;
+            margin-bottom:70px;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid #004AAD;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #004AAD;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #004AAD;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #004AAD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #003580;
+        }
+
+        footer {
+            width: 85%; /* Zelfde breedte als container */
+            max-width: 1200px;
+            margin: 0 auto; /* Centreert de footer */
+            padding: 1rem;
+            background-color: white;
+            border-top: 2px solid #004AAD;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 50%; /* Zet de footer in het midden van de pagina */
+            transform: translateX(-50%); /* Centreert de footer volledig */
+        }
+
+        footer a {
+            text-decoration: none;
+            text-align: center;
+            color: #004AAD;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer span {
+            font-size: 1.5rem;
+        }
+
+        footer img {
+            width: 32px; 
+            height: 32px; 
+            object-fit: contain; 
+            margin-bottom: 0.3rem; 
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/logo_rally_up.png') }}" alt="RallyUp Logo" class="logo">
+        <h1>NIEUWE RECENSIE</h1>
+
+        <!-- Nieuwe Review Formulier -->
+        <form action="/review/nieuw" method="POST">
+            <div class="form-group">
+                <label for="gebruikersnaam">Gebruikersnaam medespeler:</label>
+                <input type="text" id="gebruikersnaam" name="gebruikersnaam" placeholder="Voer de gebruikersnaam van de medespeler in" required>
+            </div>
+
+            {% if error_message %}
+                <p class="error-message">{{ error_message }}</p>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="score">Score (1-5):</label>
+                <select id="score" name="score" required>
+                    <option value="" disabled selected>Kies een score</option>
+                    <option value="1">1 - Slecht</option>
+                    <option value="2">2 - Matig</option>
+                    <option value="3">3 - Goed</option>
+                    <option value="4">4 - Zeer goed</option>
+                    <option value="5">5 - Uitstekend</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="commentaar">Commentaar:</label>
+                <textarea id="commentaar" name="commentaar" rows="4" placeholder="Schrijf hier je commentaar..." required></textarea>
+            </div>
+
+            <button type="submit">Opslaan</button>
+        </form>
+    </div>
+
+        {% if message %}
+            <script>
+                window.location.href = "/succes";
+            </script>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer>
+            <a href="{{ url_for('zoekertjes') }}">
+                <img src="{{ url_for('static', filename='images/zoekertjes.png') }}" alt="Ontdek">
+                Ontdek
+            </a>
+            <a href="{{ url_for('nieuw_zoekertje') }}">
+                <img src="{{ url_for('static', filename='images/tennisbal.png') }}" alt="Nieuw">
+                Nieuw
+            </a>
+            <a href="{{ url_for('frequent_day_reminder') }}">
+                <img src="{{ url_for('static', filename='images/for_you.png') }}" alt="Voor jou">
+                Voor jou
+            </a>
+            <a href="{{ url_for('nieuwe_review') }}">
+                <img src="{{ url_for('static', filename='images/recensie.png') }}" alt="Recensie">
+                Recensie
+            </a>
+            <a href="{{ url_for('profielen') }}">
+                <img src="{{ url_for('static', filename='images/zoek.png') }}" alt="Gebruikers">
+                Gebruikers
+            </a>
+            <a href="{{ url_for('profile') }}">
+                <img src="{{ url_for('static', filename='images/profiel.png') }}" alt="Profiel">
+                Profiel
+            </a>
+        </footer>
+    </div>
+</body>
+</html>
